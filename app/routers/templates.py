@@ -12,6 +12,7 @@ class TemplateType(str, Enum):
     monday = "monday"
     weekend = "weekend"
 
+# this route is used for overwriting the template
 @router.post("/templates/{template_type}")
 async def replace_template(
     template_type: TemplateType,
