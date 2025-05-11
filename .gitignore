@@ -1,0 +1,10 @@
+#virtual_environments
+venv
+
+.env
+
+generated_posts/
+generated_carousel/
+
+*.csv
+*.txt
