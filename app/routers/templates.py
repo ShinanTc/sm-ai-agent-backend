@@ -12,6 +12,7 @@ class TemplateType(str, Enum):
     monday = "monday"
     weekend = "weekend"
 
+# this route is used to change the motivation post template
 @router.post("/templates/{template_type}")
 async def replace_template(
     template_type: TemplateType,
