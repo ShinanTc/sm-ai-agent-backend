@@ -31,6 +31,7 @@ venv\Scripts\activate  # Activate on Windows
 ```bash
 pip install -r requirements.txt
 ```
+Then run the project by `uvicorn app.main:app --reload`
 
 ### 3. Prepare the Data File
 - **For Instagram Post Generator**: Place a `content.csv` file with the quotes. You can generate a fresh CSV using ChatGPT or manually create one.

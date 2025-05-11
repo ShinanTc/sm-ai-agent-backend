@@ -1,5 +1,5 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
-from typing import Literal
+from enum import Enum
 import shutil
 import os
 
@@ -7,7 +7,10 @@ from app.services.template_service import save_template
 
 router = APIRouter()
 
-TemplateType = Literal["daily", "monday", "weekend"]
+class TemplateType(str, Enum):
+    daily = "daily"
+    monday = "monday"
+    weekend = "weekend"
 
 @router.post("/templates/{template_type}")
 async def replace_template(
