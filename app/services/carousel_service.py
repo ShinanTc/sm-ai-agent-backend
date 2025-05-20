@@ -8,37 +8,31 @@ async def generate_carousel_images(file: UploadFile, bg_color: str) -> List[str]
     """
     Generate carousel images from uploaded text file.
     """
-    # Read content from uploaded file
     content = await file.read()
     text_content = content.decode().strip().split("---")
     
-    # Define paths
     output_folder = "generated_carousel"
     font_path = "BricolageGrotesque_72pt-Bold.ttf"
     heading_template = f"templates/carousel-contents/bg-{bg_color}/heading.png"
     content_template = f"templates/carousel-contents/bg-{bg_color}/content.png"
     
-    # Create output directory
     os.makedirs(output_folder, exist_ok=True)
     
-    # Clear existing files
+    # Clear any existing files in the output folder
     for existing_file in os.listdir(output_folder):
         os.remove(os.path.join(output_folder, existing_file))
     
     generated_images = []
     text_color = "#dcfb73" if bg_color == "green" else "#02ba80"
     
-    # Generate images
     for i, text in enumerate(text_content):
         template = heading_template if i == 0 else content_template
         output_path = os.path.join(output_folder, f"carousel_{i+1}.png")
         
-        # Generate image using PIL
         image = Image.open(template)
         draw = ImageDraw.Draw(image)
         font = ImageFont.truetype(font_path, 60)
         
-        # Text wrapping and positioning logic (from your original code)
         image_width, image_height = image.size
         padding_x = 100
         padding_y = 80
