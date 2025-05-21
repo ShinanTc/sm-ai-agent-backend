@@ -20,7 +20,7 @@ text_file = "content.txt"
 heading_template = f"templates/carousel-contents/bg-{bg_choice}/heading.png"
 content_template = f"templates/carousel-contents/bg-{bg_choice}/content.png"
 output_folder = "generated_carousel"
-font_path = "BricolageGrotesque_72pt-Bold.ttf"
+font_path = "assets/BricolageGrotesque_72pt-Bold.ttf"
 
 # Font settings
 font_size = 60
