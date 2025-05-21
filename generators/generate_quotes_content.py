@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
-from generate_quotes import generate_quotes  # Import function from generate_csv.py
+from generators.generate_quotes import generate_quotes  # Import function from generate_csv.py
 
 # Template options mapping
 template_map = {
