@@ -12,7 +12,7 @@ async def generate_carousel_images(file: UploadFile, bg_color: str) -> List[str]
     text_content = content.decode().strip().split("---")
     
     output_folder = "generated_carousel"
-    font_path = "BricolageGrotesque_72pt-Bold.ttf"
+    font_path = "assets/BricolageGrotesque_72pt-Bold.ttf"
     heading_template = f"templates/carousel-contents/bg-{bg_color}/heading.png"
     content_template = f"templates/carousel-contents/bg-{bg_color}/content.png"
     

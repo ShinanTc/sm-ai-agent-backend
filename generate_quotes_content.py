@@ -54,7 +54,7 @@ print(f"✅ Quotes saved to '{csv_file}'")
 
 # Now, generate the images based on the CSV file
 # Define font settings
-font_path = "BricolageGrotesque_72pt-Bold.ttf"
+font_path = "assets/BricolageGrotesque_72pt-Bold.ttf"
 font_size = 60
 padding = 80  # Space from left & right edges
 
