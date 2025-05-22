@@ -1,24 +1,16 @@
+# Instagram Content Automation
+
 ### TECH STACK USED:
 
 Programming Language: Python 🐍  
 Image Processing: Pillow (PIL) 🎨  
 Data Handling: Pandas 📊  
 Font Management: Custom TTF Font (Bricolage Grotesque) 🎨  
+Scheduling: Schedule library 📅
 
 ---
 
 ## HOW TO RUN?
-
-# Instagram Post Generator
-
-## Description
-This script generates motivational quote images based on a provided CSV or text file. The text is formatted and centered on a template image with proper line wrapping. Users can select a specific template before generating the images.
-
-Additionally, a **Carousel Image Generator** is included, which extracts structured content from a `.txt` file and creates a carousel-style image sequence.
-
----
-
-## Installation & Setup
 
 ### 1. Create and Activate a Virtual Environment
 ```bash
@@ -30,87 +22,100 @@ venv\Scripts\activate  # Activate on Windows
 ### 2. Install Required Dependencies
 ```bash
 pip install -r requirements.txt
-```
-Then run the project by `uvicorn app.main:app --reload`
-
-### 3. Prepare the Data File
-- **For Instagram Post Generator**: Place a `content.csv` file with the quotes. You can generate a fresh CSV using ChatGPT or manually create one.
-- **For Carousel Image Generator**: Place a `content.txt` file structured as follows:
-
-```
-Main Heading
----
-Content 1
----
-Content 2
----
-Content 3
+pip install -r quote_scheduler/requirements.txt
 ```
 
-Each `---` separator will indicate the next slide in the carousel.
-
-### 4. Provide Base Templates
-Ensure that you have template images inside the `templates` directory. The project is currently optimized for specific base templates:
-- `freakin-monday.png`
-- `weekend-mode.png`
-- `generic.png` (used for generic posts)
-- `carousel_base.png` (for carousel posts)
-
-Each generator will choose the relevant template based on the input.
-
-### 5. Include a Font File
-- Place a `.ttf` font file in the root directory.
-- If missing, download the required font from [Google Fonts](https://fonts.google.com/) and place it in the root folder.
-- Update the `font_path` variable in `generate_quotes.py` and `generate_carousel.py` to reflect the correct font file name.
-
----
-
-## Running the Scripts
-
-### Instagram Post Generator
+### 3. Start the FastAPI Server
 ```bash
-python generate_quotes.py
+uvicorn app.main:app --reload
 ```
-When prompted, choose a template:
-```
-Choose a template:
-A) Freaking Monday Post
-B) Weekend Mode Post
-C) Generic Post
-```
-- Enter `A` to use `freakin-monday.png`.
-- Enter `B` to use `weekend-mode.png`.
-- Enter `C` to use `generic.png`.
 
-**Output:** Generated images will be saved inside the `/generated_posts/` directory.
-
----
-
-### Carousel Image Generator
+### 4. Run the Quote Scheduler
 ```bash
-python generate_carousel.py
+python quote_scheduler/scheduler.py
 ```
-This script will:
-- Read content from `content.txt`
-- Generate images for each section
-- Store them inside `/generated_carousel/`
-
-**Output:** Generated carousel images will be saved inside the `/generated_carousel/` directory.
-
----
 
 ## Features
-✅ Automatically wraps text to fit within the template  
-✅ Padding is applied to avoid text overlapping  
-✅ Allows different base templates for different content types  
-✅ **Carousel Generation** for structured content  
-✅ **Automatic Folder Cleanup**: Each time you generate images, the previous files are deleted to maintain a fresh output  
 
----
+### 1. Quote Generation API
+- Generate motivational quotes using Gemini AI
+- Support for different templates based on the day
+- Image processing with proper text wrapping
+- API endpoints for template management and carousel generation
 
-## Notes
-- Ensure your CSV file has a column named `Quote`.
-- Ensure your `.txt` file is structured properly for carousel generation.
-- Font size and positioning are automatically adjusted for best fit.
+### 2. Automated Quote Scheduler
+- Runs daily at 5:40 PM IST
+- Automatically selects templates based on the day:
+  - Monday: Uses "Freaking Monday" template
+  - Friday: Uses "Weekend Mode" template
+  - Other days: Uses generic template
+- Ensures quote uniqueness by maintaining a history
+- Generates and saves quotes with proper formatting
+
+### 3. Carousel Generation
+- Support for multi-slide carousel posts
+- Custom background colors (green/yellow)
+- Proper text formatting and positioning
+
+## Project Structure
+
+```
+├── app/                    # FastAPI application
+├── generators/             # Quote and carousel generation scripts
+├── quote_scheduler/        # Automated scheduling system
+│   ├── scheduler.py       # Main scheduler script
+│   ├── requirements.txt   # Scheduler-specific dependencies
+│   └── quotes.csv         # Quote history database
+├── templates/             # Image templates
+└── assets/               # Fonts and other assets
+```
+
+## Configuration
+
+### Quote Scheduler
+- Runs daily at 5:40 PM IST
+- Maintains quote history in `quote_scheduler/quotes.csv`
+- Automatically selects appropriate templates
+- Prevents duplicate quotes
+
+### Templates
+- `freakin-monday.png`: Used for Monday posts
+- `weekend-mode.png`: Used for Friday/weekend posts
+- `generic.png`: Used for other days
+- Carousel templates in both green and yellow variants
+
+## Development Notes
+
+1. **Adding New Templates**
+   - Place templates in `templates/motivation-quotes/`
+   - Update `template_map` in `generate_quotes_content.py`
+
+2. **Modifying Schedule**
+   - Edit the time in `quote_scheduler/scheduler.py`
+   - Default: 5:40 PM IST
+
+3. **Quote Generation**
+   - Uses Gemini AI API
+   - Requires API key in `.env` file
+   - Ensures uniqueness through CSV history
+
+4. **Instagram Integration**
+   - TODO: Add Instagram posting logic in scheduler
+   - Current version generates images locally
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## Future Improvements
+
+- [ ] Add Instagram API integration
+- [ ] Implement retry mechanism for failed generations
+- [ ] Add monitoring and notifications
+- [ ] Create admin dashboard for quote management
+- [ ] Add support for multiple social media platforms
 
 Happy Generating! 🚀
