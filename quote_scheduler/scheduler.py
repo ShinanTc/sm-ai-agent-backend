@@ -84,7 +84,7 @@ def run_scheduler():
     """Run the scheduler."""
     # Convert 5:40 PM IST to system's local time
     ist = pytz.timezone('Asia/Kolkata')
-    target_time = "17:40"
+    target_time = "15:55"
     
     schedule.every().day.at(target_time).do(generate_daily_quote)
     
