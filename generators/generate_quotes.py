@@ -20,14 +20,16 @@ def generate_quotes(prompt):
     # Generate content from prompt
     response = model.generate_content(prompt)
 
-    # Extract the generated text
+    # Extract and clean the generated text
     quotes_list = response.text.strip().split("\n")
 
-    # Store up to 50 quotes
     for quote in quotes_list[:50]:
-        quotes.append({"Quote": quote.strip()})
+        # Remove leading *, -, or numbers with dots (e.g., "1. ", "* ", "- ")
+        cleaned = quote.strip().lstrip("*-0123456789. ").strip()
+        quotes.append({"Quote": cleaned})
 
     return quotes
+
 
 # Optional: test the function directly
 if __name__ == "__main__":

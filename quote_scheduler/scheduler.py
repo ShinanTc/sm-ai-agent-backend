@@ -31,19 +31,28 @@ def is_quote_unique(quote, csv_path="quote_scheduler/quotes.csv"):
     df = pd.read_csv(csv_path)
     return quote not in df["Quote"].values
 
+from datetime import datetime
+import os
+import csv
+
+from generators.generate_image_from_latest_quote import create_image_with_latest_quote
+
 def save_quote(quote, csv_path="quote_scheduler/quotes.csv"):
-    """Save the quote to CSV file."""
+    """Save a quote to CSV and generate image."""
     os.makedirs(os.path.dirname(csv_path), exist_ok=True)
+
+    # Save to CSV
+    with open(csv_path, mode="a", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+        if os.path.getsize(csv_path) == 0:
+            writer.writerow(["Quote", "Date"])
+        writer.writerow([quote, datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
     
-    new_quote = pd.DataFrame([{"Quote": quote, "Date": datetime.now().strftime("%Y-%m-%d")}])
-    
-    if os.path.exists(csv_path):
-        df = pd.read_csv(csv_path)
-        df = pd.concat([df, new_quote], ignore_index=True)
-    else:
-        df = new_quote
-        
-    df.to_csv(csv_path, index=False)
+    print("✅ Quote saved to CSV.")
+
+    # Generate image using the latest quote
+    create_image_with_latest_quote()
+
 
 def generate_daily_quote():
     """Generate and process daily quote."""
@@ -82,9 +91,9 @@ def generate_daily_quote():
     
 def run_scheduler():
     """Run the scheduler."""
-    # Convert 5:40 PM IST to system's local time
+    # Convert 5:00 PM IST to system's local time
     ist = pytz.timezone('Asia/Kolkata')
-    target_time = "17:40"
+    target_time = "18:00"
     
     schedule.every().day.at(target_time).do(generate_daily_quote)
     
