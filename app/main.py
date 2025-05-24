@@ -1,12 +1,24 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from quote_scheduler.scheduler import run_scheduler
+from contextlib import asynccontextmanager
+import threading
 
 from app.routers import templates, carousel
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Start scheduler in a background thread
+    thread = threading.Thread(target=run_scheduler, daemon=True)
+    thread.start()
+    
+    yield  # <-- This is required so the app runs after starting the thread
 
 app = FastAPI(
     title="Instagram Content Automation",
     description="API for automating Instagram content generation",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 # Configure CORS
