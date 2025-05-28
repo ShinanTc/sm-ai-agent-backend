@@ -6,6 +6,8 @@ venv
 generated_posts/
 generated_carousel/
 
+insta_settings.json
+
 *.csv
 *.txt
 

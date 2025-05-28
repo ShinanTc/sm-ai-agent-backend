@@ -5,100 +5,106 @@ import pytz
 import os
 import sys
 import pandas as pd
+import csv
 
-# Add the project root to Python path to import from parent directory
+# Add the project root to Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from generators.generate_quotes import generate_quotes
 from generators.generate_quotes_content import template_map
+from generators.generate_image_from_latest_quote import create_image_with_latest_quote
+from instagrapi import Client
+
+# 🔐 Instagram credentials (replace with your actual credentials)
+INSTAGRAM_USERNAME = os.getenv("IG_USERNAME")
+INSTAGRAM_PASSWORD = os.getenv("IG_PASSWORD")
+SESSION_FILE = "insta_settings.json"
 
 def get_template_for_day():
-    """Determine which template to use based on the day of the week."""
     today = datetime.now().strftime("%A")
-    
     if today == "Monday":
-        return "A", template_map["A"]["prompt"]  # Monday template
+        return "A", template_map["A"]["prompt"]
     elif today == "Friday":
-        return "B", template_map["B"]["prompt"]  # Weekend template
+        return "B", template_map["B"]["prompt"]
     else:
-        return "C", template_map["C"]["prompt"]  # Generic template
+        return "C", template_map["C"]["prompt"]
 
 def is_quote_unique(quote, csv_path="quote_scheduler/quotes.csv"):
-    """Check if the quote already exists in the CSV file."""
     if not os.path.exists(csv_path):
         return True
-        
     df = pd.read_csv(csv_path)
     return quote not in df["Quote"].values
 
-from datetime import datetime
-import os
-import csv
-
-from generators.generate_image_from_latest_quote import create_image_with_latest_quote
-
 def save_quote(quote, csv_path="quote_scheduler/quotes.csv"):
-    """Save a quote to CSV and generate image."""
     os.makedirs(os.path.dirname(csv_path), exist_ok=True)
-
-    # Save to CSV
     with open(csv_path, mode="a", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
         if os.path.getsize(csv_path) == 0:
             writer.writerow(["Quote", "Date"])
         writer.writerow([quote, datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
-    
     print("✅ Quote saved to CSV.")
-
-    # Generate image using the latest quote
     create_image_with_latest_quote()
 
+def get_instagram_client():
+    client = Client()
+    try:
+        if os.path.exists(SESSION_FILE):
+            client.load_settings(SESSION_FILE)
+            client.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
+            print("✅ Logged in using saved session.")
+        else:
+            raise Exception("Session not found. Performing first-time login.")
+    except Exception as e:
+        print(f"🔐 {e}")
+        print("⚠️ Performing fresh login...")
+        client = Client()
+        client.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
+        client.dump_settings(SESSION_FILE)
+        print("✅ Session saved to file.")
+    return client
+
+def post_to_instagram():
+    image_path = "generated_posts/latest_quote.png"
+    caption = os.environ.get("QUOTE_TEXT", "Daily Inspiration")
+
+    try:
+        client = get_instagram_client()
+        client.photo_upload(image_path, caption)
+        print("✅ Successfully posted to Instagram.")
+    except Exception as e:
+        print(f"❌ Failed to post to Instagram: {e}")
 
 def generate_daily_quote():
-    """Generate and process daily quote."""
-    print(f"Starting quote generation at {datetime.now()}")
-    
-    # Get template and prompt based on day
+    print(f"📅 Starting quote generation at {datetime.now()}")
     template_choice, prompt = get_template_for_day()
-    
-    # Generate quotes until we get a unique one
+
     while True:
         quotes = generate_quotes(prompt)
         if not quotes:
-            print("Failed to generate quotes")
+            print("❌ Failed to generate quotes")
             return
-            
+
         quote = quotes[0]["Quote"]
         if is_quote_unique(quote):
             break
-            
-        print("Generated quote already exists, trying again...")
-    
-    # Save the unique quote
+
+        print("🔁 Generated quote already exists, trying again...")
+
     save_quote(quote)
-    
-    # Import here to avoid circular imports
-    from generators.generate_quotes_content import template_map
-    
-    # Set up the environment for quote generation
+
     os.environ["TEMPLATE_CHOICE"] = template_choice
     os.environ["QUOTE_TEXT"] = quote
-    
-    print(f"Generated quote for {datetime.now().strftime('%A')}: {quote}")
-    print(f"Using template: {template_map[template_choice]['path']}")
-    
-    # TODO: Add Instagram posting logic here
-    
+
+    print(f"✅ Generated quote for {datetime.now().strftime('%A')}: {quote}")
+    print(f"🧩 Using template: {template_map[template_choice]['path']}")
+
+    post_to_instagram()
+
 def run_scheduler():
-    """Run the scheduler."""
-    # Convert 5:00 PM IST to system's local time
-    ist = pytz.timezone('Asia/Kolkata')
-    target_time = "18:00"
-    
+    target_time = "18:57"
     schedule.every().day.at(target_time).do(generate_daily_quote)
-    
-    print(f"Scheduler started. Will generate quotes daily at {target_time} IST")
-    
+    print(f"⏰ Scheduler started. Will generate and post daily at {target_time} IST")
+
     while True:
         schedule.run_pending()
         time.sleep(60)
