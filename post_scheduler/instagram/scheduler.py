@@ -1,7 +1,6 @@
 import schedule
 import time
 from datetime import datetime
-import pytz
 import os
 import sys
 import pandas as pd
@@ -14,6 +13,7 @@ from generators.generate_quotes import generate_quotes
 from generators.generate_quotes_content import template_map
 from generators.generate_image_from_latest_quote import create_image_with_latest_quote
 from instagrapi import Client
+from generators.generate_description_for_quote import generate_description_for_quote
 
 # 🔐 Instagram credentials (replace with your actual credentials)
 INSTAGRAM_USERNAME = os.getenv("IG_USERNAME")
@@ -29,13 +29,13 @@ def get_template_for_day():
     else:
         return "C", template_map["C"]["prompt"]
 
-def is_quote_unique(quote, csv_path="post_scheduler/quotes.csv"):
+def is_quote_unique(quote, csv_path="post_scheduler/instagram/quotes.csv"):
     if not os.path.exists(csv_path):
         return True
     df = pd.read_csv(csv_path)
     return quote not in df["Quote"].values
 
-def save_quote(quote, csv_path="post_scheduler/quotes.csv"):
+def save_quote(quote, csv_path="post_scheduler/instagram/quotes.csv"):
     os.makedirs(os.path.dirname(csv_path), exist_ok=True)
     with open(csv_path, mode="a", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
@@ -93,7 +93,9 @@ def generate_daily_quote():
     save_quote(quote)
 
     os.environ["TEMPLATE_CHOICE"] = template_choice
-    os.environ["QUOTE_TEXT"] = quote
+    description = generate_description_for_quote(quote)
+    os.environ["QUOTE_TEXT"] = description
+
 
     print(f"✅ Generated quote for {datetime.now().strftime('%A')}: {quote}")
     print(f"🧩 Using template: {template_map[template_choice]['path']}")
@@ -101,7 +103,7 @@ def generate_daily_quote():
     post_to_instagram()
 
 def run_scheduler():
-    target_time = "15:37"
+    target_time = "16:03"
     schedule.every().day.at(target_time).do(generate_daily_quote)
     print(f"⏰ Scheduler started. Will generate and post daily at {target_time} IST")
 

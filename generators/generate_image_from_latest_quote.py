@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 from generators.generate_quotes_content import template_map
 
-def get_latest_quote(csv_path="post_scheduler/quotes.csv"):
+def get_latest_quote(csv_path="post_scheduler/instagram/quotes.csv"):
     """Read the latest quote from the CSV file."""
     if not os.path.exists(csv_path):
         raise FileNotFoundError("quotes.csv not found.")
