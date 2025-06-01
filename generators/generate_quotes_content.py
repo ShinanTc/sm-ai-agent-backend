@@ -7,17 +7,24 @@ from generators.generate_quotes import generate_quotes
 template_map = {
     "A": {
         "path": "templates/motivation-quotes/freakin-monday.png",
-        "prompt": "Hate Mondays? Try being broke - Directly give me 50 motivational quotes like that, Nothing else. It shouldn't feel repetitive. Also do not put numbers on each quote."
+        "prompt": (
+            "Generate a short, punchy motivational quote with a humorous and sarcastic tone, perfect for a Monday post. Each quote should capture grit, hustle, or a witty attitude toward overcoming the Monday blues. Avoid repeating ideas and do not use numbers or list formatting. Make the quotes sound fresh, clever, and meme-worthy — similar to: “Hate Mondays? Try being broke."
+        )
     },
     "B": {
         "path": "templates/motivation-quotes/weekend-mode.png",
-        "prompt": "Weekend loading. Please wait forever. - Directly give me 50 light-hearted motivational quotes related to relaxation, self-care, or chill productivity. Nothing else. Also do not put numbers on each quote."
+        "prompt": (
+            "Create a light-hearted, witty, and motivational quote related to relaxation, self-care, or chill productivity. The tone should be gentle, feel-good, and perfect for a weekend vibe. Avoid repeating the same phrases or ideas and do not number the quotes. Focus on themes like slowing down, recharging, soft success, and finding balance."
+        )
     },
     "C": {
         "path": "templates/motivation-quotes/generic.png",
-        "prompt": "Co cola sold only 26 bottles in their first year, never give up - Directly give me 50 motivational quotes related to tech like this, Nothing else. Also do not put numbers on each quote."
-    }
+        "prompt": (
+            "Generate a unique, motivational quote tailored for people in tech or coding. Avoid clichés like 'One line of code…' and instead focus on themes such as problem-solving, persistence, debugging, creativity, and innovation. Each quote should be under 25 words, inspirational, and without numbering. Aim for a tone similar to: “Code is poetry with logic” or “Even bugs teach lessons worth learning."
+        )
+    },
 }
+
 
 def main():
     # Ask the user for template choice

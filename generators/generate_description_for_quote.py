@@ -6,9 +6,7 @@ genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 def generate_description_for_quote(quote):
     prompt = f"""
-Write a small to medium-length Instagram description for the motivational quote below. 
-It should be informative, talk about the message behind the quote, and sound inspiring but not preachy.
-End with these hashtags:
+Write a 2–4 sentence Instagram description for the following motivational quote. The description should clearly explain the core message behind the quote in a way that resonates with tech professionals, students, freelancers, and a broader audience seeking motivation. Keep the tone clean, professional, and inspiring without sounding preachy or personal. Avoid using emojis. If helpful, include a relatable example or metaphor to bring the quote’s meaning to life. End the caption with these hashtags:
 
 #techmotivation #motivation #workmotivation #quote #quoteoftheday
 
