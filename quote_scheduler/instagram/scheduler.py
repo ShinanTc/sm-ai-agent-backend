@@ -101,7 +101,7 @@ def generate_daily_quote():
     post_to_instagram()
 
 def run_scheduler():
-    target_time = "18:57"
+    target_time = "15:37"
     schedule.every().day.at(target_time).do(generate_daily_quote)
     print(f"⏰ Scheduler started. Will generate and post daily at {target_time} IST")
 
