@@ -22,7 +22,7 @@ venv\Scripts\activate  # Activate on Windows
 ### 2. Install Required Dependencies
 ```bash
 pip install -r requirements.txt
-pip install -r quote_scheduler/requirements.txt
+pip install -r post_scheduler/requirements.txt
 ```
 
 ### 3. Start the FastAPI Server
@@ -32,7 +32,7 @@ uvicorn app.main:app --reload
 
 ### 4. Run the Quote Scheduler
 ```bash
-python quote_scheduler/scheduler.py
+python post_scheduler/scheduler.py
 ```
 
 ## Features
@@ -62,7 +62,7 @@ python quote_scheduler/scheduler.py
 ```
 ├── app/                    # FastAPI application
 ├── generators/             # Quote and carousel generation scripts
-├── quote_scheduler/        # Automated scheduling system
+├── post_scheduler/        # Automated scheduling system
 │   ├── scheduler.py       # Main scheduler script
 │   ├── requirements.txt   # Scheduler-specific dependencies
 │   └── quotes.csv         # Quote history database
@@ -74,7 +74,7 @@ python quote_scheduler/scheduler.py
 
 ### Quote Scheduler
 - Runs daily at 5:40 PM IST
-- Maintains quote history in `quote_scheduler/quotes.csv`
+- Maintains quote history in `post_scheduler/quotes.csv`
 - Automatically selects appropriate templates
 - Prevents duplicate quotes
 
@@ -91,7 +91,7 @@ python quote_scheduler/scheduler.py
    - Update `template_map` in `generate_quotes_content.py`
 
 2. **Modifying Schedule**
-   - Edit the time in `quote_scheduler/scheduler.py`
+   - Edit the time in `post_scheduler/scheduler.py`
    - Default: 5:40 PM IST
 
 3. **Quote Generation**

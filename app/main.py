@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from quote_scheduler.instagram.scheduler import run_scheduler
+from post_scheduler.instagram.scheduler import run_scheduler
 from contextlib import asynccontextmanager
 import threading
 

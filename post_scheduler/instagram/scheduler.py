@@ -29,13 +29,13 @@ def get_template_for_day():
     else:
         return "C", template_map["C"]["prompt"]
 
-def is_quote_unique(quote, csv_path="quote_scheduler/quotes.csv"):
+def is_quote_unique(quote, csv_path="post_scheduler/quotes.csv"):
     if not os.path.exists(csv_path):
         return True
     df = pd.read_csv(csv_path)
     return quote not in df["Quote"].values
 
-def save_quote(quote, csv_path="quote_scheduler/quotes.csv"):
+def save_quote(quote, csv_path="post_scheduler/quotes.csv"):
     os.makedirs(os.path.dirname(csv_path), exist_ok=True)
     with open(csv_path, mode="a", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
