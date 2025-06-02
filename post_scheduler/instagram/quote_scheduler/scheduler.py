@@ -29,13 +29,13 @@ def get_template_for_day():
     else:
         return "C", template_map["C"]["prompt"]
 
-def is_quote_unique(quote, csv_path="post_scheduler/instagram/quotes.csv"):
+def is_quote_unique(quote, csv_path="post_scheduler/instagram/quote_scheduler/quotes.csv"):
     if not os.path.exists(csv_path):
         return True
     df = pd.read_csv(csv_path)
     return quote not in df["Quote"].values
 
-def save_quote(quote, csv_path="post_scheduler/instagram/quotes.csv"):
+def save_quote(quote, csv_path="post_scheduler/instagram/quote_scheduler/quotes.csv"):
     os.makedirs(os.path.dirname(csv_path), exist_ok=True)
     with open(csv_path, mode="a", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
@@ -103,7 +103,7 @@ def generate_daily_quote():
     post_to_instagram()
 
 def run_scheduler():
-    target_time = "16:28"
+    target_time = "19:50"
     schedule.every().day.at(target_time).do(generate_daily_quote)
     print(f"⏰ Scheduler started. Will generate and post daily at {target_time} IST")
 
