@@ -13,6 +13,7 @@ from generators.generate_quotes import generate_quotes
 from generators.generate_quotes_content import template_map
 from generators.generate_image_from_latest_quote import create_image_with_latest_quote
 from instagrapi import Client
+from instagrapi.types import Location
 from generators.generate_description_for_quote import generate_description_for_quote
 
 # 🔐 Instagram credentials (replace with your actual credentials)
@@ -67,12 +68,22 @@ def post_to_instagram():
     image_path = "generated_posts/latest_quote.png"
     caption = os.environ.get("QUOTE_TEXT", "Daily Inspiration")
 
+    # Example location data (change to your desired location)
+    location = Location(
+        pk=0,  # You can leave this 0 if unknown
+        name="New York, USA",
+        address="New York, NY",
+        lat=40.7128,
+        lng=-74.0060,
+    )
+
     try:
         client = get_instagram_client()
-        client.photo_upload(image_path, caption)
-        print("✅ Successfully posted to Instagram.")
+        client.photo_upload(image_path, caption, location=location)
+        print("✅ Successfully posted to Instagram with location.")
     except Exception as e:
         print(f"❌ Failed to post to Instagram: {e}")
+
 
 def generate_daily_quote():
     print(f"📅 Starting quote generation at {datetime.now()}")
@@ -103,7 +114,8 @@ def generate_daily_quote():
     post_to_instagram()
 
 def run_scheduler():
-    target_time = "19:50"
+    # 19:59
+    target_time = "13:34"
     schedule.every().day.at(target_time).do(generate_daily_quote)
     print(f"⏰ Scheduler started. Will generate and post daily at {target_time} IST")
 
